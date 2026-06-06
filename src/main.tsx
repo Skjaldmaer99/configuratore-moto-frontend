@@ -13,6 +13,8 @@ import LoginPage from "./pages/LoginPage.tsx";
 import RegisterPage from "./pages/RegisterPage.tsx";
 import VehicleDetailPage from "./pages/VehicleDetailPage.tsx";
 import VehiclesPage from "./pages/VehiclesPage.tsx";
+import CreaCatalogoPage from "./pages/CreaCatalogoPage.tsx";
+import ConfigurationsPage from "./pages/ConfigurationsPage.tsx";
 
 const client = new QueryClient({
   defaultOptions: {
@@ -39,11 +41,19 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
+        element: <VehiclesPage />
+      },
+      {
+        path: '/dashboard',
         element: <DashboardPage />
       },
       {
-        path: '/vehicles',
-        element: <VehiclesPage />
+        path: '/crea-catalogo',
+        element: <CreaCatalogoPage />
+      },
+      {
+        path: '/le-mie-configurazioni',
+        element: <ConfigurationsPage />
       }
     ]
   },
@@ -64,7 +74,7 @@ const router = createBrowserRouter([
     element: <AuthLayout />,
     children: [
       {
-        path: '/vehicles/:id',
+        path: '/models/:id',
         element: <VehicleDetailPage />
       },
     ]
