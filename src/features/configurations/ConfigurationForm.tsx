@@ -22,11 +22,16 @@ import type { Model } from '../models/model.types';
 import { type User } from '../users/user.type';
 import { ConfigurationService } from './configuration.service';
 import { useConfigurationStore } from "./configuration.store";
+import { useLocation, useParams } from 'react-router';
 
 const steps = [1, 2, 3, 4];
 type ConfigurationFormValues = z.infer<typeof configurationFormSchema>;
 
 export default function ConfigurationForm({ model }: { model: Model }) {
+    const location = useLocation();
+    const { id } = useParams();
+    const isEdit = location.pathname.startsWith("/configurations");
+
     const {
         configurationId,
         currentStep,

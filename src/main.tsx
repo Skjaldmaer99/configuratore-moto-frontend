@@ -15,6 +15,7 @@ import VehicleDetailPage from "./pages/VehicleDetailPage.tsx";
 import VehiclesPage from "./pages/VehiclesPage.tsx";
 import CreaCatalogoPage from "./pages/CreaCatalogoPage.tsx";
 import ConfigurationsPage from "./pages/ConfigurationsPage.tsx";
+import ConfigurationDetailPage from "./pages/ConfigurationDetailPage.tsx";
 
 const client = new QueryClient({
   defaultOptions: {
@@ -76,6 +77,10 @@ const router = createBrowserRouter([
       {
         path: '/models/:id',
         element: <VehicleDetailPage />
+      },
+      {
+        path: '/configurations/:id',
+        element: <ConfigurationDetailPage />
       },
     ]
   }
