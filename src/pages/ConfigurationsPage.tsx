@@ -20,15 +20,25 @@ const ConfigurationsPage = () => {
                     return (
                         <div className="p-3 border-1 border-primary rounded-full flex justify-between">
                             <div className="flex gap-3">
-                                <p>{configuration.model.name} {configuration.engine ? configuration.engine.displacement_cc : "-"}</p>
+                                <div className="h-12">
+                                    <img
+                                        src={configuration.color ? configuration.color?.image : '/image-non-disp.png'}
+                                        alt={configuration.model.name}
+                                        className="w-full h-full"
+                                    />
+                                </div>
+                                <p className="my-auto">{configuration.model.name} {configuration.engine ? configuration.engine.displacement_cc : "-"}</p>
                                 {configuration.color.hex_code &&
-                                    <p className={`w-7 h-7 rounded-full`}
+                                    <p className={`w-7 h-7 rounded-full my-auto`}
                                         style={{ backgroundColor: color }}
                                     >
                                     </p>
                                 }
                             </div>
-                            <Link to={`/configurations/${configuration.id}`}>View</Link> {/* recupero l'id della configurazione */}
+                            <div className="border-1 border-black/60 rounded-full p-0.5 px-2 my-auto">{configuration.status}</div>
+                            <Link to={`/configurations/${configuration.id}`}
+                                className="my-auto bg-red-700 hover:bg-red-900 text-white rounded-full p-1 px-2"
+                            >View</Link> {/* recupero l'id della configurazione */}
                         </div>
                     )
                 })

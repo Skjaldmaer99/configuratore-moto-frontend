@@ -60,20 +60,6 @@ export const modelFormSchema = z.object({
 
 });
 
-/* export const configurationFormSchema = z.object({
-    user_id: z.number(),
-    model_id: z.number(),
-
-    engine_variant_id: z.number().nullable().optional(),
-    color_id: z.number().nullable().optional(),
-
-    status: z.string(),
-    current_step: z.number(),
-    total_price: z.number(),
-
-    optional_ids: z.array(z.number()).default([]),
-    accessory_ids: z.array(z.number()).default([]),
-}); */
 export const configurationFormSchema =
     z.object({
         user_id: z.number(),
@@ -84,7 +70,6 @@ export const configurationFormSchema =
         accessory_ids: z.array(z.number()).default([]),
         status: z.string(),
         current_step: z.number(),
-        total_price: z.number().nullable(),
     });
 
 export const configurationOptionalsFormSchema = z.object({

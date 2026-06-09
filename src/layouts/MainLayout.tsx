@@ -4,9 +4,11 @@ import { Input } from '@/components/ui/input'
 import { AuthService } from '@/features/auth/auth.service'
 import { useQuery } from '@tanstack/react-query'
 import { Search } from 'lucide-react'
-import { Link, Outlet } from 'react-router'
+import { Link, Outlet, useLocation } from 'react-router'
 
 const MainLayout = () => {
+    const location = useLocation();
+    const isConfiguration = location.pathname.startsWith("/le-mie-configurazioni");
 
     const { data: user } = useQuery({
         queryFn: AuthService.user,
@@ -24,9 +26,10 @@ const MainLayout = () => {
                     {user?.role === "admin"
                         ? <Link to={'/crea-catalogo'} className='bg-primary text-secondary border border-primary py-1 px-3 text-nowrap rounded-full cursor-pointer font-light text-sm my-auto'>Crea catalogo</Link>
                         : user?.role === "customer"
-                            ? <Link to={'/le-mie-configurazioni'} className='bg-primary text-secondary border border-primary py-1 px-3 text-nowrap rounded-full cursor-pointer font-light text-sm my-auto'>Le mie configurazioni</Link>
-                            /* poi rendi quest'ultimo "" */
-                            : <Link to={'/crea-catalogo'} className='bg-primary text-secondary border border-primary py-1 px-3 text-nowrap rounded-full cursor-pointer font-light text-sm my-auto'>MOo</Link>
+                            ? (
+                                !isConfiguration && <Link to={'/le-mie-configurazioni'} className='bg-primary text-secondary border border-primary py-1 px-3 text-nowrap rounded-full cursor-pointer font-light text-sm my-auto'>Le mie configurazioni</Link>
+                            )
+                            : ""
                     }
                     <Field orientation="horizontal">
                         <Input
