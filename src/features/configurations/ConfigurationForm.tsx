@@ -1,3 +1,4 @@
+import DialogConfiguration from '@/components/DialogConfiguration';
 import { Button } from '@/components/ui/button-1';
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -13,7 +14,10 @@ import {
 import { configurationFormSchema } from '@/lib/constant';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useForm } from 'react-hook-form';
+import { useLocation, useParams } from 'react-router';
+import { toast } from 'sonner';
 import type z from 'zod';
 import { AuthService } from '../auth/auth.service';
 import type { Color } from '../colors/color.type';
@@ -22,10 +26,7 @@ import type { Model } from '../models/model.types';
 import { type User } from '../users/user.type';
 import { ConfigurationService } from './configuration.service';
 import { useConfigurationStore } from "./configuration.store";
-import { useLocation, useParams } from 'react-router';
 import type { Configuration } from './configuration.type';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import DialogConfiguration from '@/components/DialogConfiguration';
 
 const steps = [1, 2, 3, 4];
 type ConfigurationFormValues = z.infer<typeof configurationFormSchema>;
@@ -101,9 +102,10 @@ export default function ConfigurationForm({ model }: { model: Model }) {
             queryClient.invalidateQueries({
                 queryKey: ["user"],
             });
-            setCurrentStep(currentStep + 1);
+            setCurrentStep(currentStep === 4 ? currentStep : currentStep + 1);
         },
-        onError: (error: any) => {
+        onError: () => {
+            toast.error("Errore nell'aggiornamento della configurazione")
         }
     });
 
@@ -340,10 +342,13 @@ export default function ConfigurationForm({ model }: { model: Model }) {
                     <ChevronLeft /> Precedente
                 </Button>
                 {currentStep === 4 ?
-                    <DialogConfiguration />
+                    <DialogConfiguration
+                        configurationId={configuration!.id!}
+                    /* quoteId={configuration!.quote.id} */
+                    />
                     : <Button
                         variant="outline"
-                        onClick={() => setCurrentStep(currentStep + 1)}
+                        onClick={() => setCurrentStep(currentStep === 4 ? currentStep : currentStep + 1)}
                         disabled={currentStep === steps.length}
                         className='uppercase bg-white border-1 border-black rounded-full'
                     >

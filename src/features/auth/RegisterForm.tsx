@@ -144,7 +144,7 @@ export default function RegisterForm() {
                 </div>
             </Field>
             <div>
-                <Button type="submit" className="mb-3">Submit</Button>
+                <Button type="submit" className="mb-3">Registrati</Button>
                 <p className="text-sm">Sei già registrato? Vai alla pagina di <Link to={'/login'} className="underline">Login</Link></p>
             </div>
         </form>

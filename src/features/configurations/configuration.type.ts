@@ -3,6 +3,7 @@ import type { Model } from "../models/model.types";
 import type { Optional } from "../optionals/optional.type";
 import type { Accessory } from "../accessories/accessory.type";
 import type { Color } from "../colors/color.type";
+import type { Quote } from "../quotes/quote.type";
 
 export type Configuration = {
     id?: number;
@@ -20,4 +21,5 @@ export type Configuration = {
     color: Color,
     optionals: Optional[],
     accessories: Accessory[],
+    quote: Quote,
 }

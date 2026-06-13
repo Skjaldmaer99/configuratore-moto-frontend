@@ -80,10 +80,13 @@ export const configurationAccessoriesFormSchema = z.object({
 
 });
 
-
-
-
-
+export const optionalIncompatibilitiesFormSchema = z.object({
+    optional_1_id: z.number(),
+    optional_2_id: z.number(),
+}).refine((data) => data.optional_1_id !== data.optional_2_id, {
+    "message": "Il primo optional deve essere diverso dal secondo.",
+    "path": ["optional_2_id"]
+})
 
 export const engineVariantFormSchema = z.object({
 
@@ -92,9 +95,17 @@ export const engineVariantFormSchema = z.object({
 export const colorFormSchema = z.object({
 
 })
+
 export const optionalFormSchema = z.object({
-
+    name: z.string(),
+    description: z.string(),
+    price: z.coerce.number(),
+    type: z.enum(['performance', 'touring', 'protection', 'comfort']),
 })
-export const accessoryFormSchema = z.object({
 
+export const accessoryFormSchema = z.object({
+    name: z.string(),
+    description: z.string(),
+    price: z.coerce.number().min(0),
+    category: z.enum(['tech', 'style']),
 })

@@ -4,9 +4,13 @@ import type z from "zod";
 import type { Model } from "./model.types";
 
 export class ModelService {
-    static async list() {
+    static async list(searchTerm: string = ''): Promise<Model[]> {
         try {
-            const res = await http.get('/models');
+            const cleanSearch = typeof searchTerm === 'string' ? searchTerm : '';
+            const url = cleanSearch
+                ? `/models?search=${encodeURIComponent(cleanSearch)}`
+                : '/models';
+            const res = await http.get(url);
             return res.data.data;
         } catch (error) {
             throw new Error(error instanceof Error ? error.message : "Errore generico");

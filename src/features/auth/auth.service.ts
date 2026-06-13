@@ -3,6 +3,16 @@ import type z from "zod";
 import { loginFormSchema, registerFormSchema } from "@/lib/constant"
 
 export class AuthService {
+
+    static async register(data: z.infer<typeof registerFormSchema>) {
+        try {
+            const res = await http.post('/register', data);
+            return res.data;
+        } catch (error) {
+            throw new Error(error instanceof Error ? error.message : "Errore generico");
+        }
+    }
+
     static async login(data: z.infer<typeof loginFormSchema>) {
         try {
             const res = await http.post('/login', data);
@@ -16,15 +26,6 @@ export class AuthService {
             localStorage.setItem('authToken', token);
             localStorage.setItem('user', JSON.stringify(user));
 
-            return res.data;
-        } catch (error) {
-            throw new Error(error instanceof Error ? error.message : "Errore generico");
-        }
-    }
-
-    static async register(data: z.infer<typeof registerFormSchema>) {
-        try {
-            const res = await http.post('/register', data);
             return res.data;
         } catch (error) {
             throw new Error(error instanceof Error ? error.message : "Errore generico");

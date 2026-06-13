@@ -3,6 +3,14 @@ import { http } from "@/lib/http";
 import type z from "zod";
 
 export class CatalogService {
+    /* static async list() {
+        try {
+
+        } catch (error) {
+            throw new Error(error instanceof Error ? error.message : "Errore generico");
+        }
+    } */
+
     static async fullCreate(data: z.infer<typeof fullCreateFormSchema>) {
         const formData = new FormData();
 

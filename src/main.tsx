@@ -16,6 +16,7 @@ import VehiclesPage from "./pages/VehiclesPage.tsx";
 import CreaCatalogoPage from "./pages/CreaCatalogoPage.tsx";
 import ConfigurationsPage from "./pages/ConfigurationsPage.tsx";
 import ConfigurationDetailPage from "./pages/ConfigurationDetailPage.tsx";
+import ProtectedRoute from "./lib/ProtectedRoute.tsx";
 
 const client = new QueryClient({
   defaultOptions: {
@@ -42,19 +43,19 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <VehiclesPage />
+        element: <ProtectedRoute allowedRoles={['customer']}><VehiclesPage /></ProtectedRoute>
       },
       {
         path: '/dashboard',
-        element: <DashboardPage />
+        element: <ProtectedRoute allowedRoles={['admin']}><DashboardPage /></ProtectedRoute>
       },
       {
         path: '/crea-catalogo',
-        element: <CreaCatalogoPage />
+        element: <ProtectedRoute allowedRoles={['admin']}><CreaCatalogoPage /></ProtectedRoute>
       },
       {
         path: '/le-mie-configurazioni',
-        element: <ConfigurationsPage />
+        element: <ProtectedRoute allowedRoles={['customer']}><ConfigurationsPage /></ProtectedRoute>
       }
     ]
   },
@@ -76,11 +77,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/models/:id',
-        element: <VehicleDetailPage />
+        element: <ProtectedRoute allowedRoles={['customer']}><VehicleDetailPage /></ProtectedRoute>
       },
       {
         path: '/configurations/:id',
-        element: <ConfigurationDetailPage />
+        element: <ProtectedRoute allowedRoles={['customer']}><ConfigurationDetailPage /></ProtectedRoute>
       },
     ]
   }

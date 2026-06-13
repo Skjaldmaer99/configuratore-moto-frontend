@@ -1,3 +1,4 @@
+import DialogConfiguration from "@/components/DialogConfiguration";
 import type { User } from "@/features/users/user.type";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router";
@@ -18,7 +19,7 @@ const ConfigurationsPage = () => {
                 user?.configurations?.map((configuration) => {
                     const color = configuration.color.hex_code;
                     return (
-                        <div className="p-3 border-1 border-primary rounded-full flex justify-between">
+                        <div className="p-3 border border-primary rounded-full flex justify-between">
                             <div className="flex gap-3">
                                 <div className="h-12">
                                     <img
@@ -35,10 +36,13 @@ const ConfigurationsPage = () => {
                                     </p>
                                 }
                             </div>
-                            <div className="border-1 border-black/60 rounded-full p-0.5 px-2 my-auto">{configuration.status}</div>
-                            <Link to={`/configurations/${configuration.id}`}
-                                className="my-auto bg-red-700 hover:bg-red-900 text-white rounded-full p-1 px-2"
-                            >View</Link> {/* recupero l'id della configurazione */}
+                            <div className="border border-black/60 rounded-full p-0.5 px-2 my-auto">{configuration.status}</div>
+                            <div className="flex gap-3">
+                                {configuration.status === "completed" && <DialogConfiguration configurationId={configuration.id!} />}
+                                <Link to={`/configurations/${configuration.id}`}
+                                    className="my-auto bg-red-700 hover:bg-red-900 text-white rounded-full p-1 px-2"
+                                >View</Link> {/* recupero l'id della configurazione */}
+                            </div>
                         </div>
                     )
                 })

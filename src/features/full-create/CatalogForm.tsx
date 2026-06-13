@@ -154,7 +154,7 @@ export function CatalogForm() {
     // SUCCESS
     if (mutation.isSuccess) {
         return (
-            <div className="p-8 border rounded-lg">
+            <div className="p-8 border rounded-full">
                 <motion.div
                     initial={{ opacity: 0, y: -16 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -213,7 +213,7 @@ export function CatalogForm() {
                                                 field.onChange(value)
                                             }
                                         >
-                                            <SelectTrigger>
+                                            <SelectTrigger className="rounded-full border-black/70">
                                                 <SelectValue placeholder="Brand" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -238,7 +238,7 @@ export function CatalogForm() {
                                 render={({ field, fieldState }) => (
                                     <Field data-invalid={fieldState.invalid}>
                                         <FieldLabel>Modello</FieldLabel>
-                                        <Input {...field} placeholder="R1" />
+                                        <Input {...field} placeholder="R1" className="rounded-full border-black/70" />
                                         <FieldError errors={[fieldState.error]} />
                                     </Field>
                                 )}
@@ -255,7 +255,7 @@ export function CatalogForm() {
                                             value={field.value}
                                             onValueChange={field.onChange}
                                         >
-                                            <SelectTrigger>
+                                            <SelectTrigger className="rounded-full border-black/70">
                                                 <SelectValue placeholder="Categoria" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -287,6 +287,7 @@ export function CatalogForm() {
                                             onChange={(e) =>
                                                 field.onChange(e.target.valueAsNumber)
                                             }
+                                            className="rounded-full border-black/70"
                                         />
                                         <FieldError errors={[fieldState.error]} />
                                     </Field>
@@ -300,7 +301,7 @@ export function CatalogForm() {
                                     <Field>
                                         <FieldLabel>Descrizione</FieldLabel>
 
-                                        <Textarea {...field} />
+                                        <Textarea {...field} className="rounded-3xl border-black/70" />
                                     </Field>
                                 )}
                             />
@@ -312,7 +313,7 @@ export function CatalogForm() {
                             {colorFields.map((color, index) => (
                                 <div
                                     key={color.id}
-                                    className="border rounded-lg p-4 space-y-4"
+                                    className="border rounded-full p-4 space-y-4"
                                 >
                                     <div className="flex justify-between items-center">
                                         <h3 className="font-semibold">
@@ -335,7 +336,7 @@ export function CatalogForm() {
                                             <Field>
                                                 <FieldLabel>Nome colore</FieldLabel>
 
-                                                <Input {...field} />
+                                                <Input {...field} className="rounded-full border-black/70" />
                                             </Field>
                                         )}
                                     />
@@ -347,7 +348,7 @@ export function CatalogForm() {
                                             <Field>
                                                 <FieldLabel>Hex color</FieldLabel>
 
-                                                <Input {...field} placeholder="#FFFFFF" />
+                                                <Input {...field} placeholder="#FFFFFF" className="rounded-full border-black/70" />
                                             </Field>
                                         )}
                                     />
@@ -368,6 +369,7 @@ export function CatalogForm() {
                                                             e.target.valueAsNumber
                                                         )
                                                     }
+                                                    className="rounded-full border-black/70"
                                                 />
                                             </Field>
                                         )}
@@ -387,6 +389,7 @@ export function CatalogForm() {
                                                             e.target.files?.[0]
                                                         )
                                                     }
+                                                    className="rounded-full border-black/70"
                                                 />
                                             </Field>
                                         )}
@@ -414,7 +417,7 @@ export function CatalogForm() {
                             {engineFields.map((engine, index) => (
                                 <div
                                     key={engine.id}
-                                    className="border rounded-lg p-4 space-y-4"
+                                    className="border rounded-full p-4 space-y-4"
                                 >
                                     <div className="flex justify-between">
                                         <h3 className="font-semibold">
@@ -434,7 +437,8 @@ export function CatalogForm() {
                                         render={({ field }) => (
                                             <Field>
                                                 <FieldLabel>Nome variante</FieldLabel>
-                                                <Input {...field} />
+                                                <Input {...field}
+                                                    className="rounded-full border-black/70" />
                                             </Field>
                                         )}
                                     />
@@ -452,6 +456,7 @@ export function CatalogForm() {
                                                             e.target.valueAsNumber
                                                         )
                                                     }
+                                                    className="rounded-full border-black/70"
                                                 />
                                             </Field>
                                         )}
@@ -462,7 +467,7 @@ export function CatalogForm() {
                                         render={({ field }) => (
                                             <Field>
                                                 <FieldLabel>Tipo motore</FieldLabel>
-                                                <Input {...field} />
+                                                <Input {...field} className="rounded-full border-black/70" />
                                             </Field>
                                         )}
                                     />
@@ -480,6 +485,7 @@ export function CatalogForm() {
                                                             e.target.valueAsNumber
                                                         )
                                                     }
+                                                    className="rounded-full border-black/70"
                                                 />
                                             </Field>
                                         )}
@@ -497,6 +503,7 @@ export function CatalogForm() {
                                                     onChange={(e) =>
                                                         field.onChange(e.target.valueAsNumber)
                                                     }
+                                                    className="rounded-full border-black/70"
                                                 />
                                             </Field>
                                         )}
@@ -512,7 +519,7 @@ export function CatalogForm() {
                                                     value={field.value}
                                                     onValueChange={field.onChange}
                                                 >
-                                                    <SelectTrigger>
+                                                    <SelectTrigger className="rounded-full border-black/70">
                                                         <SelectValue placeholder="Seleziona cambio" />
                                                     </SelectTrigger>
 
@@ -537,7 +544,7 @@ export function CatalogForm() {
                                                     value={field.value}
                                                     onValueChange={field.onChange}
                                                 >
-                                                    <SelectTrigger>
+                                                    <SelectTrigger className="rounded-full border-black/70">
                                                         <SelectValue placeholder="Tipo carburante" />
                                                     </SelectTrigger>
 
@@ -564,6 +571,7 @@ export function CatalogForm() {
                                                             e.target.valueAsNumber
                                                         )
                                                     }
+                                                    className="rounded-full border-black/70"
                                                 />
                                             </Field>
                                         )}
@@ -680,7 +688,7 @@ export function CatalogForm() {
 
                 </StepperPanel>
 
-                <div className="flex justify-between">
+                <div className="flex justify-between mt-5">
                     <Button
                         type="button"
                         onClick={() =>

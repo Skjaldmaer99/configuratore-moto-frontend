@@ -13,7 +13,7 @@ import { loginFormSchema } from "@/lib/constant"
 import {
     zodResolver
 } from "@hookform/resolvers/zod"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
     useForm
 } from "react-hook-form"
@@ -27,21 +27,39 @@ import {
 
 export default function LoginForm() {
 
-    const queryCLient = useQueryClient();
+    const queryClient = useQueryClient();
     const navigate = useNavigate();
 
     const form = useForm<z.infer<typeof loginFormSchema>>({
         resolver: zodResolver(loginFormSchema),
     })
 
+    const { data: user } = useQuery({
+        queryFn: AuthService.user,
+        queryKey: ['user']
+    });
+
     const mutation = useMutation({
         mutationFn: AuthService.login,
         onSuccess: () => {
-            queryCLient.invalidateQueries({
+            queryClient.invalidateQueries({
+                queryKey: ['configurations']
+            })
+            queryClient.invalidateQueries({
+                queryKey: ['catalogs']
+            })
+            queryClient.invalidateQueries({
+                queryKey: ['models']
+            })
+            queryClient.invalidateQueries({
                 queryKey: ['user']
             })
             toast.success("Login effettuato con successo");
-            navigate('/')
+            if (user?.role === "admin") {
+                navigate('/dashboard');
+            } else {
+                navigate('/');
+            }
         },
         onError: () => {
             toast.error("Errore nel login");
@@ -75,7 +93,7 @@ export default function LoginForm() {
                 <FieldError>{form.formState.errors.password?.message}</FieldError>
             </Field>
             <div>
-                <Button type="submit" className="mb-3">Submit</Button>
+                <Button type="submit" className="mb-3">Accedi</Button>
                 <p className="text-sm">Password dimenticata? <Link to={'/recupero-password'} className="underline">Recupera password</Link></p>
                 <p className="text-sm">Non hai un account? <Link to={'/register'} className="underline">Registrati</Link></p>
             </div>

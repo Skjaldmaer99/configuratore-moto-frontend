@@ -1,34 +1,57 @@
 import { ModelService } from "@/features/models/model.service";
-import { type Model } from "@/features/models/model.types";
+import { useSearchStore } from "@/hooks/use-searchstore";
 import { Button } from "@base-ui/react/button";
-import { useQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { Link } from "react-router";
 
 const VehiclesPage = () => {
+    const debouncedSearch = useSearchStore((state) => state.debouncedSearch);
+    const setSearchTerm = useSearchStore((state) => state.setSearchTerm);
+    const searchTerm = useSearchStore((state) => state.searchTerm);
 
-    const { data } = useQuery<Model[]>({
-        queryFn: ModelService.list,
-        queryKey: ['models']
-    });
+    const brands = ["all", "yamaha", "honda", "ktm", "kawasaki", "aprilia", "ducati"];
 
-    console.log(data)
+    const { data: models, isLoading } = useQuery({
+        queryFn: () => ModelService.list(debouncedSearch),
+        queryKey: ['models', debouncedSearch]
+    })
+
+    const handleBrand = (brand: string) => {
+        if (brand === "all") {
+            setSearchTerm('');
+        } else {
+            setSearchTerm(brand);
+        }
+    }
+
+    if (isLoading) return <p>Caricamento modelli...</p>;
 
     return (
         <div className="mt-20 max-w-7xl mx-auto">
             <div className="flex flex-wrap gap-4 justify-center">
-                <Button className={'bg-secondary text-primary border border-primary py-1 px-3 min-w-[150px] rounded-full cursor-pointer active:bg-primary active:text-secondary'}>ALL</Button>
-                <Button className={'bg-secondary text-primary border border-primary py-1 px-3 min-w-[150px] rounded-full cursor-pointer active:bg-primary active:text-secondary'}>DUCATI</Button>
-                <Button className={'bg-secondary text-primary border border-primary py-1 px-3 min-w-[150px] rounded-full cursor-pointer active:bg-primary active:text-secondary'}>HONDA</Button>
-                <Button className={'bg-secondary text-primary border border-primary py-1 px-3 min-w-[150px] rounded-full cursor-pointer active:bg-primary active:text-secondary'}>YAMAHA</Button>
-                <Button className={'bg-secondary text-primary border border-primary py-1 px-3 min-w-[150px] rounded-full cursor-pointer active:bg-primary active:text-secondary'}>APRILIA</Button>
-                <Button className={'bg-secondary text-primary border border-primary py-1 px-3 min-w-[150px] rounded-full cursor-pointer active:bg-primary active:text-secondary'}>KTM</Button>
-                <Button className={'bg-secondary text-primary border border-primary py-1 px-3 min-w-[150px] rounded-full cursor-pointer active:bg-primary active:text-secondary'}>KAWASAKI</Button>
+                {brands.map((brand) => {
+                    // Determina se il pulsante corrente è quello selezionato
+                    const isSelected = (brand === 'all' && searchTerm === '') || searchTerm.toLowerCase() === brand;
+
+                    return (
+                        <Button
+                            key={brand}
+                            onClick={() => handleBrand(brand)}
+                            className={`py-1 px-3 min-w-[150px] rounded-full cursor-pointer transition-colors border border-primary ${isSelected
+                                ? 'bg-primary/70 text-secondary' // Stile quando è attivo/selezionato
+                                : 'bg-gray-200 text-primary hover:bg-primary/10' // Stile di default
+                                }`}
+                        >
+                            {brand}
+                        </Button>
+                    );
+                })}
             </div>
             <div className="w-full grid grid-cols-1 sm:grid-cols-3 p-3 mt-10 mx-auto">
-                {data?.map((model) => {
+                {models?.map((model) => {
                     return <Link to={`/models/${model.id}`}>
-                        <div className="w-full relative" key={model.name}>
+                        <div className="w-full relative" key={model.id}>
                             <img
                                 src={model.colors ? model.colors[0]?.image : '/image-non-disp.png'}
                                 alt={model.name}
