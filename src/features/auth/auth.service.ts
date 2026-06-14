@@ -1,6 +1,6 @@
 import { http } from "@/lib/http"
 import type z from "zod";
-import { loginFormSchema, registerFormSchema } from "@/lib/constant"
+import { loginFormSchema, recuperoPasswordFormSchema, registerFormSchema, resetPasswordFormSchema } from "@/lib/constant"
 
 export class AuthService {
 
@@ -38,6 +38,23 @@ export class AuthService {
             return res.data.user;
         } catch (error) {
             throw new Error(error instanceof Error ? error.message : "Errore generico");
+        }
+    }
+
+    static async forgotPassword(data: z.infer<typeof recuperoPasswordFormSchema>) {
+        try {
+            const res = await http.post('/forgot-password', data);
+            return res.data.data;
+        } catch (error) {
+            throw new Error(error instanceof Error ? error.message : "errore generico");
+        }
+    }
+    static async resetPassword(data: z.infer<typeof resetPasswordFormSchema>) {
+        try {
+            const res = await http.post('/reset-password', data);
+            return res.data.data;
+        } catch (error) {
+            throw new Error(error instanceof Error ? error.message : "errore generico");
         }
     }
 }

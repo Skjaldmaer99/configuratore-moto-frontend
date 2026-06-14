@@ -22,7 +22,7 @@ export default function FilterSearch() {
                 placeholder="Cerca per modello..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className='border border-black rounded-full'
+                className='bg-white border border-black rounded-full'
             />
         </div>
     );

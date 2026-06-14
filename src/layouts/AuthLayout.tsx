@@ -1,7 +1,9 @@
-import React from 'react'
-import { Outlet } from 'react-router'
+import { Outlet } from 'react-router';
 
 const AuthLayout = () => {
+    const body = document.querySelector('body');
+    body?.classList.remove('bg');
+
     return (
         <div>
             <Outlet />

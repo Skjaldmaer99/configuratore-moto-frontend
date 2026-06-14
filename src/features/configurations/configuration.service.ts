@@ -28,4 +28,12 @@ export class ConfigurationService {
             throw new Error(error instanceof Error ? error.message : "Errore generico");
         }
     }
+
+    static async delete(id: number) {
+        try {
+            await http.patch(`/configurations/${id}`);
+        } catch (error) {
+            throw new Error(error instanceof Error ? error.message : "Errore generico");
+        }
+    }
 }

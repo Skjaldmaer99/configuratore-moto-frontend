@@ -17,6 +17,11 @@ import CreaCatalogoPage from "./pages/CreaCatalogoPage.tsx";
 import ConfigurationsPage from "./pages/ConfigurationsPage.tsx";
 import ConfigurationDetailPage from "./pages/ConfigurationDetailPage.tsx";
 import ProtectedRoute from "./lib/ProtectedRoute.tsx";
+import RecuperoPasswordPage from "./pages/RecuperoPasswordPage.tsx";
+import ResetPasswordPage from "./pages/ResetPasswordPage.tsx";
+import SuccessPasswordPage from "./pages/SuccessPasswordPage.tsx";
+import VerifyEmailPage from "./pages/VerifyEmailPage.tsx";
+import RedirectPasswordPage from "./pages/RedirectPasswordPage.tsx";
 
 const client = new QueryClient({
   defaultOptions: {
@@ -56,7 +61,7 @@ const router = createBrowserRouter([
       {
         path: '/le-mie-configurazioni',
         element: <ProtectedRoute allowedRoles={['customer']}><ConfigurationsPage /></ProtectedRoute>
-      }
+      },
     ]
   },
   {
@@ -70,11 +75,26 @@ const router = createBrowserRouter([
         path: '/login',
         element: <LoginPage />
       },
-    ]
-  },
-  {
-    element: <AuthLayout />,
-    children: [
+      {
+        path: '/recupero-password',
+        element: <RecuperoPasswordPage />
+      },
+      {
+        path: '/reset-password',
+        element: <ResetPasswordPage />
+      },
+      {
+        path: '/success-password',
+        element: <SuccessPasswordPage />
+      },
+      {
+        path: '/verify-email',
+        element: <VerifyEmailPage />,
+      },
+      {
+        path: '/redirect-password',
+        element: <RedirectPasswordPage />,
+      },
       {
         path: '/models/:id',
         element: <ProtectedRoute allowedRoles={['customer']}><VehicleDetailPage /></ProtectedRoute>

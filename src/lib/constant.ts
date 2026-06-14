@@ -13,7 +13,10 @@ export const registerFormSchema = z.object({
     privacy_policy: z.boolean().refine(val => val === true, {
         message: "Devi accettare i termini e le condizioni",
     })
-});
+}).refine((data) => data.password === data.password_confirmation, {
+    message: "Le password non coincidono",
+    path: ["password_confirmation"],
+});;
 
 export const fullCreateFormSchema = z.object({
     model: z.object({
@@ -109,3 +112,15 @@ export const accessoryFormSchema = z.object({
     price: z.coerce.number().min(0),
     category: z.enum(['tech', 'style']),
 })
+
+export const recuperoPasswordFormSchema = z.object({
+    email: z.string().min(1).min(1).max(100),
+});
+
+export const resetPasswordFormSchema = z.object({
+    password: z.string().min(1).min(8),
+    password_confirmation: z.string().min(1).min(8),
+}).refine((data) => data.password === data.password_confirmation, {
+    message: "Le password non coincidono",
+    path: ["password_confirmation"],
+});;

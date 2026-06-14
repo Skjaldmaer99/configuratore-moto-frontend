@@ -17,6 +17,13 @@ const MainLayout = () => {
     })
     console.log(user)
 
+    const body = document.querySelector('body');
+    if (isConfiguration) {
+        body?.classList.add('bg');
+    } else {
+        body?.classList.remove('bg');
+    }
+
     const handleLogout = () => {
         localStorage.getItem('authToken')
         localStorage.getItem('user')
@@ -44,13 +51,13 @@ const MainLayout = () => {
                         )
                         : user?.role === "customer"
                             ? (
-                                !isConfiguration && <Link to={'/le-mie-configurazioni'} className='bg-primary text-secondary border border-primary py-1.5 px-3 text-nowrap rounded-full cursor-pointer font-light text-sm my-auto'>Le mie configurazioni</Link>
+                                !isConfiguration && <Link to={'/le-mie-configurazioni'} className='bg-primary text-secondary border border-primary py-1.5 px-3 text-nowrap rounded-full cursor-pointer font-light text-sm my-auto'>Configurazioni</Link>
                             )
                             : ""
                     }
-                    <Field orientation="horizontal">
+                    {!user || user?.role === "customer" && <Field orientation="horizontal">
                         <FilterSearch />
-                    </Field>
+                    </Field>}
                     {!user ? (
                         <>
                             <Link to={'/login'} className='my-auto'>Accedi</Link>

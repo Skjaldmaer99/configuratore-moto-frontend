@@ -39,8 +39,8 @@ const VehiclesPage = () => {
                             key={brand}
                             onClick={() => handleBrand(brand)}
                             className={`py-1 px-3 min-w-[150px] rounded-full cursor-pointer transition-colors border border-primary ${isSelected
-                                ? 'bg-primary/70 text-secondary' // Stile quando è attivo/selezionato
-                                : 'bg-gray-200 text-primary hover:bg-primary/10' // Stile di default
+                                ? 'bg-red-700 text-secondary' // Stile quando è attivo/selezionato
+                                : 'bg-gray-200 text-black hover:text-white hover:bg-red-700' // Stile di default
                                 }`}
                         >
                             {brand}

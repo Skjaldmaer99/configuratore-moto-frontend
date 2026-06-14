@@ -1,29 +1,30 @@
-/* import { createFileRoute } from "@tanstack/react-router"; */
-import { useState, useEffect } from "react";
+import { ConfigurationService } from "@/features/configurations/configuration.service";
+import { useConfigurationStore } from "@/features/configurations/configuration.store";
+import type { Configuration } from "@/features/configurations/configuration.type";
+import { useQuery } from "@tanstack/react-query";
+import { useLocation, useParams } from "react-router";
 
-/* export const Route = createFileRoute("/")({
-    component: Menu,
-}); */
-
-const ITEMS = [
-    { label: "MODELLO", hint: "Use a Skill" },
-    { label: "COLORE", hint: "Use an Item" },
-    { label: "CILINDRATA", hint: "Change Equipment" },
-    { label: "OPTIONALS", hint: "Manage Personas" },
-    { label: "ACCESSORI", hint: "View Stats" },
-];
 
 function Menu() {
-    const [active, setActive] = useState(0);
+    const { configurationId, currentStep, setCurrentStep } = useConfigurationStore();
+    const { id } = useParams();
+    const location = useLocation();
+    const isEdit = location.pathname.startsWith('/configurations');
 
-    useEffect(() => {
-        const onKey = (e: KeyboardEvent) => {
-            if (e.key === "ArrowDown") setActive((i) => (i + 1) % ITEMS.length);
-            if (e.key === "ArrowUp") setActive((i) => (i - 1 + ITEMS.length) % ITEMS.length);
-        };
-        window.addEventListener("keydown", onKey);
-        return () => window.removeEventListener("keydown", onKey);
-    }, []);
+    const { data: configuration } = useQuery<Configuration>({
+        queryFn: () => ConfigurationService.show(isEdit ? id : configurationId),
+        queryKey: ['configuration', configurationId],
+    });
+
+    const ITEMS = [
+        { label: `${configuration?.model.name} ${configuration?.engine.name ? configuration?.engine.name : "-"}`, step: 0 },
+        { label: `${configuration?.color.name ? configuration?.color.name : "COLORE"}`, step: 1 },
+        { label: `${configuration?.engine.name ? configuration?.engine.name : "CILINDRATA"}`, step: 2 },
+        { label: "OPTIONALS", step: 3 },
+        { label: "ACCESSORI", step: 4 },
+    ];
+
+
 
     return (
         <main className="relative min-h-[340px] overflow-hidden bg-white text-black font-sans"> {/* min-h-screen */}
@@ -35,16 +36,15 @@ function Menu() {
             {/* menu list */}
             <div className="absolute left-[5%] top-1/2 -translate-y-1/2 z-20 flex flex-col items-start" style={{ gap: "-10px" }}>
                 {ITEMS.map((item, i) => {
-                    const isActive = i === active;
+                    const isActive = item.step === currentStep;;
                     // alternating tilt + overlap
                     const rot = (i % 2 === 0 ? -1 : 1) * (3 + (i % 3));
                     const offsetX = (i % 2 === 0 ? -1 : 1) * (i * 4);
                     return (
                         <button
                             key={item.label}
-                            onClick={() => setActive(i)}
-                            onMouseEnter={() => setActive(i)}
-                            className="relative font-black italic tracking-tighter leading-[0.85] transition-all duration-200"
+                            onClick={() => setCurrentStep(item.step)}
+                            className="relative font-black italic tracking-tighter leading-[0.85] transition-all duration-200 uppercase"
                             style={{
                                 fontSize: isActive ? "6rem" : "4rem",
                                 marginTop: i === 0 ? 0 : "0px",
@@ -81,10 +81,10 @@ function Menu() {
 
             <style>{`
         @keyframes slash {
-          from { transform: translateY(-50%) scaleX(0); }
-          to { transform: translateY(-50%) scaleX(1); }
+            from { transform: translateY(-50%) scaleX(0); }
+            to { transform: translateY(-50%) scaleX(1); }
         }
-      `}</style>
+        `}</style>
         </main>
     );
 }
