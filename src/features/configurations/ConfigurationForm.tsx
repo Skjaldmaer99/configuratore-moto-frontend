@@ -25,11 +25,11 @@ import type { EngineVariant } from '../engineVariants/engineVariant.type';
 import type { Model } from '../models/model.types';
 import { type User } from '../users/user.type';
 import { ConfigurationService } from './configuration.service';
-import { useConfigurationStore } from "./configuration.store";
 import type { Configuration } from './configuration.type';
 import { useEffect } from 'react';
+import { useConfigurationStore } from './configuration.store';
 
-const steps = [1, 2, 3, 4];
+const steps = [1, 2, 3, 4, 5];
 type ConfigurationFormValues = z.infer<typeof configurationFormSchema>;
 
 export default function ConfigurationForm({ model }: { model: Model }) {
@@ -39,11 +39,15 @@ export default function ConfigurationForm({ model }: { model: Model }) {
 
     const {
         configurationId,
-        currentStep = 1,
+        currentStep = `${isEdit ? 2 : 1}`,
         setConfigurationId,
         setCurrentStep,
         reset,
     } = useConfigurationStore();
+
+    useEffect(() => {
+        reset();
+    }, [reset]);
 
     const queryClient = useQueryClient();
 
@@ -63,12 +67,8 @@ export default function ConfigurationForm({ model }: { model: Model }) {
     });
 
     useEffect(() => {
-        reset();
-    }, [reset]);
-
-    useEffect(() => {
         if (isEdit) {
-            setCurrentStep(configuration?.current_step ? configuration?.current_step : 1)
+            setCurrentStep(configuration?.current_step ? configuration?.current_step : 2)
         } else setCurrentStep(1)
     }, [isEdit, !isEdit])
 
@@ -82,7 +82,7 @@ export default function ConfigurationForm({ model }: { model: Model }) {
             optional_ids: [],
             accessory_ids: [],
             status: "draft",
-            current_step: 1,
+            current_step: 2,
         }
     });
 
@@ -101,8 +101,11 @@ export default function ConfigurationForm({ model }: { model: Model }) {
             setConfigurationId(
                 response.data.id
             );
-            setCurrentStep(2);
+            setCurrentStep(currentStep + 1);
         },
+        onError: () => {
+            toast.error("Errore nell'inizio della configurazione")
+        }
     });
 
     const updateConfigurationMutation = useMutation({
@@ -118,33 +121,34 @@ export default function ConfigurationForm({ model }: { model: Model }) {
             queryClient.invalidateQueries({
                 queryKey: ["user"],
             });
-            setCurrentStep(currentStep === 4 ? currentStep : currentStep + 1);
+            setCurrentStep(currentStep === 5 ? currentStep : currentStep + 1);
         },
         onError: () => {
             toast.error("Errore nell'aggiornamento della configurazione")
         }
     });
 
+    const handleConfigurationSubmit = () => {
+        createConfigurationMutation.mutate({
+            user_id: user!.id,
+            model_id: model.id,
+            color_id: null,
+            engine_variant_id: null,
+            optional_ids: [],
+            accessory_ids: [],
+            status: "draft",
+            current_step: 2,
+        });
+    };
+
     const handleColorSubmit = (color: Color) => {
         form.setValue("color_id", color.id);
-        if (!isEdit) {
-            createConfigurationMutation.mutate({
-                user_id: user!.id,
-                model_id: model.id,
-                color_id: color.id,
-                engine_variant_id: null,
-                optional_ids: [],
-                accessory_ids: [],
-                status: "draft",
-                current_step: 1,
-            });
-        }
-        console.log(configuration ? Number(configuration.total_price) + color.extra_price : model.base_price + color.extra_price,)
         updateConfigurationMutation.mutate({
             id: !isEdit ? configurationId! : Number(id),
             data: {
                 color_id: color.id,
-                current_step: 1
+                current_step: 2,
+                status: `${(configuration?.model_id && configuration?.engine_variant_id) ? "completed" : "draft"}`,
             },
         });
     };
@@ -155,7 +159,8 @@ export default function ConfigurationForm({ model }: { model: Model }) {
             id: !isEdit ? configurationId! : Number(id),
             data: {
                 engine_variant_id: engine.id,
-                current_step: 2,
+                current_step: 3,
+                status: `${(configuration?.model_id && configuration?.color_id) ? "completed" : "draft"}`,
             },
         });
     };
@@ -207,7 +212,7 @@ export default function ConfigurationForm({ model }: { model: Model }) {
             id: !isEdit ? configurationId! : Number(id),
             data: {
                 optional_ids: form.watch("optional_ids"),
-                current_step: 3,
+                current_step: 4,
             },
         });
     };
@@ -218,7 +223,7 @@ export default function ConfigurationForm({ model }: { model: Model }) {
             data: {
                 accessory_ids:
                     form.watch("accessory_ids"),
-                current_step: 4,
+                current_step: 5,
                 status: "completed",
             },
         });
@@ -241,18 +246,33 @@ export default function ConfigurationForm({ model }: { model: Model }) {
 
             <StepperPanel className="text-sm">
                 <div className='flex justify-between'>
-                    {currentStep == 1
+                    {currentStep == 2
                         ? <p className='uppercase font-extrabold text-white text-2xl mb-10'>Seleziona il colore</p>
-                        : currentStep == 2
+                        : currentStep == 3
                             ? <p className='uppercase font-extrabold text-white text-2xl mb-10'>Seleziona la cilindrata</p>
-                            : currentStep == 3
+                            : currentStep == 4
                                 ? <p className='uppercase font-extrabold text-white text-2xl mb-10'>Seleziona gli optionals</p>
-                                : <p className='uppercase font-extrabold text-white text-2xl mb-10'>Seleziona gli accessori</p>
+                                : currentStep == 5
+                                    ? <p className='uppercase font-extrabold text-white text-2xl mb-10'>Seleziona gli accessori</p>
+                                    : ""
                     }
-                    <p className='text-white'>Prezzo: <span className='font-bold text-lg'>{(configuration && configuration.total_price !== 0.00) ? configuration.total_price : ""}</span></p>
+                    <p className='text-white'>Prezzo: <span className='font-bold text-lg'>{(configuration && configuration.total_price !== 0.00) ? configuration.total_price : model.base_price}</span></p>
                 </div>
                 <StepperContent value={1}>
                     <div className="flex gap-7 justify-center">
+                        <Button
+                            type="button"
+                            className='flex p-3 pe-5 border-1 border-black text-black uppercase font-bold rounded-full bg-white hover:bg-white/40 mx-auto h-15'
+                            onClick={() =>
+                                handleConfigurationSubmit()
+                            }
+                        >
+                            Inizia configurazione
+                        </Button>
+                    </div>
+                </StepperContent>
+                <StepperContent value={2}>
+                    <div className="flex gap-7 max-w-3xl justify-center mx-auto">
                         {model.colors?.map((color) => (
                             <Button
                                 key={color.id}
@@ -271,8 +291,8 @@ export default function ConfigurationForm({ model }: { model: Model }) {
                         ))}
                     </div>
                 </StepperContent>
-                <StepperContent value={2}>
-                    <div className="grid gap-4">
+                <StepperContent value={3}>
+                    <div className="flex gap-7 max-w-3xl justify-center mx-auto">
                         {model.engine_variants?.map((engine) => (
                             <Button
                                 key={engine.id}
@@ -291,7 +311,7 @@ export default function ConfigurationForm({ model }: { model: Model }) {
                         ))}
                     </div>
                 </StepperContent>
-                <StepperContent className="w-full flex flex-col gap-5 items-center justify-center" key={3} value={3}>
+                <StepperContent className="w-full flex flex-col gap-5 items-center justify-center" key={4} value={4}>
                     {/* FORM OPTIONALS */}
                     {model.optionals?.map((optional) => {
 
@@ -321,7 +341,7 @@ export default function ConfigurationForm({ model }: { model: Model }) {
                         Conferma Optional
                     </Button>
                 </StepperContent>
-                <StepperContent className="w-full flex flex-col gap-5 items-center justify-center" key={4} value={4}>
+                <StepperContent className="w-full flex flex-col gap-5 items-center justify-center" key={5} value={5}>
                     {/* FORM ACCESSORI */}
                     {model.accessories?.map((accessory) => (
                         <div
@@ -352,20 +372,20 @@ export default function ConfigurationForm({ model }: { model: Model }) {
             <div className="flex items-center justify-between gap-2.5">
                 <Button variant="outline"
                     onClick={() => setCurrentStep(currentStep - 1)}
-                    disabled={currentStep === 1}
+                    disabled={currentStep === 1 || (isEdit && currentStep === 2)}
                     className='uppercase bg-white border-1 border-black rounded-full'
                 >
                     <ChevronLeft /> Precedente
                 </Button>
-                {currentStep === 4 ?
+                {currentStep === 5 ?
+                    /* se non ho color_id model_id e engine_variant_id non posso premere su fine */
                     <DialogConfiguration
                         configurationId={configuration!.id!}
-                    /* quoteId={configuration!.quote.id} */
                     />
                     : <Button
                         variant="outline"
-                        onClick={() => setCurrentStep(currentStep === 4 ? currentStep : currentStep + 1)}
-                        disabled={currentStep === steps.length}
+                        onClick={() => setCurrentStep(currentStep === 5 ? currentStep : currentStep + 1)}
+                        disabled={currentStep === steps.length || currentStep === 1}
                         className='uppercase bg-white border-1 border-black rounded-full'
                     >
                         Successivo <ChevronRight />

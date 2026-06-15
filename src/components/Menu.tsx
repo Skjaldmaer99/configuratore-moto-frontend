@@ -1,6 +1,8 @@
 import { ConfigurationService } from "@/features/configurations/configuration.service";
 import { useConfigurationStore } from "@/features/configurations/configuration.store";
 import type { Configuration } from "@/features/configurations/configuration.type";
+import { ModelService } from "@/features/models/model.service";
+import type { Model } from "@/features/models/model.types";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation, useParams } from "react-router";
@@ -11,16 +13,25 @@ function Menu() {
     const { id } = useParams();
     const location = useLocation();
     const isEdit = location.pathname.startsWith('/configurations');
+    const isModel = location.pathname.startsWith('/models');
     const isMobile = useIsMobile();
 
     const configId = isEdit
         ? Number(id)
         : configurationId;
-
     const { data: configuration, isLoading, isError } = useQuery<Configuration>({
         queryFn: () => ConfigurationService.show(configId!),
         queryKey: ['configurations', configId],
         enabled: !!configId,
+    });
+
+    const modelId = isModel
+        ? Number(id)
+        : configId;
+    const { data: model } = useQuery<Model>({
+        queryFn: () => ModelService.find(modelId),
+        queryKey: ['models', modelId],
+        enabled: !!modelId,
     });
 
     if (isLoading) {
@@ -37,11 +48,11 @@ function Menu() {
     });
 
     const ITEMS = [
-        { label: `${configuration?.model?.name ? configuration?.model?.name : "MODELLO"} ${configuration?.engine?.name ? configuration?.engine?.name : "-"}`, step: 0 },
-        { label: `${configuration?.color?.name ? configuration?.color?.name : "COLORE"}`, step: 1 },
-        { label: `${configuration?.engine?.name ? configuration?.engine?.name : "CILINDRATA"}`, step: 2 },
-        { label: "OPTIONALS", step: 3 },
-        { label: "ACCESSORI", step: 4 },
+        { label: `${configuration?.model?.name ? configuration?.model?.name : model?.name} ${configuration?.engine?.name ? configuration?.engine?.name : "-"}`, step: 1 },
+        { label: `${configuration?.color?.name ? configuration?.color?.name : "COLORE"}`, step: 2 },
+        { label: `${configuration?.engine?.name ? configuration?.engine?.name : "CILINDRATA"}`, step: 3 },
+        { label: "OPTIONALS", step: 4 },
+        { label: "ACCESSORI", step: 5 },
     ];
 
 

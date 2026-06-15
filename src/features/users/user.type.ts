@@ -6,5 +6,6 @@ export type User = {
     email: string;
     password: string;
     role: string;
+    email_verified_at: string | null;
     configurations?: Configuration[]
 }

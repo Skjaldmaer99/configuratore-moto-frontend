@@ -68,6 +68,7 @@ export default function DialogConfiguration({ configurationId }: DialogConfigura
                     render={<Button
                         variant="outline"
                         className='uppercase bg-white border-1 border-black rounded-full'
+                        disabled={!configuration?.model_id || !configuration?.color_id || !configuration?.engine_variant_id}
                     >
                         Fine <ChevronRight />
                     </Button>}

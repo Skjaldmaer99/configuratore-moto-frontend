@@ -41,7 +41,7 @@ const ResetPasswordForm = () => {
             navigate('/success-password')
         },
         onError: () => {
-            toast.error("Errore durante l'accesso");
+            toast.error("Errore durante il reset della password");
         }
     })
 

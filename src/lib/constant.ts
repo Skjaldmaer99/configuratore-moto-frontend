@@ -1,27 +1,28 @@
 import z from "zod";
 
 export const loginFormSchema = z.object({
-    email: z.string(),
-    password: z.string().min(1).min(8)
+    email: z.string().email("Inserisci un indirizzo email valido"),
+    password: z.string().min(8, "La password deve contenere almeno 8 caratteri")
 });
+
 export const registerFormSchema = z.object({
     name: z.string().min(1),
-    email: z.string(),
+    email: z.string().email("Inserisci un indirizzo email valido"),
     role: z.string(),
-    password: z.string().min(1).min(8),
-    password_confirmation: z.string().min(1).min(8),
+    password: z.string().min(8, "La password deve contenere almeno 8 caratteri"),
+    password_confirmation: z.string().min(8, "La password deve contenere almeno 8 caratteri"),
     privacy_policy: z.boolean().refine(val => val === true, {
         message: "Devi accettare i termini e le condizioni",
     })
 }).refine((data) => data.password === data.password_confirmation, {
     message: "Le password non coincidono",
     path: ["password_confirmation"],
-});;
+});
 
 export const fullCreateFormSchema = z.object({
     model: z.object({
         brand: z.string(),
-        name: z.string().min(1),
+        name: z.string().min(1, "Inserisci almeno un carattere"),
         category: z.string(),
         base_price: z.number(),
         description: z.string().optional(),

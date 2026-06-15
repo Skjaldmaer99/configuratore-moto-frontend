@@ -2,12 +2,14 @@ import FilterSearch from '@/components/FilterSearch'
 import { Button } from '@/components/ui/button'
 import { Field } from '@/components/ui/field'
 import { AuthService } from '@/features/auth/auth.service'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router'
+import { toast, Toaster } from 'sonner'
 
 const MainLayout = () => {
     const location = useLocation();
     const isConfiguration = location.pathname.startsWith("/le-mie-configurazioni");
+    const isDashboard = location.pathname.startsWith("/dashboard");
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
@@ -18,23 +20,26 @@ const MainLayout = () => {
     console.log(user)
 
     const body = document.querySelector('body');
-    if (isConfiguration) {
+    if (isConfiguration || isDashboard) {
         body?.classList.add('bg');
     } else {
         body?.classList.remove('bg');
     }
 
-    const handleLogout = () => {
-        localStorage.getItem('authToken')
-        localStorage.getItem('user')
+    const mutation = useMutation({
+        mutationFn: AuthService.logout,
+        mutationKey: ['user'],
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['user'] });
 
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('user');
-        queryClient.invalidateQueries({
-            queryKey: ['user']
-        })
-        navigate('/login');
-    }
+            navigate('/login')
+        },
+        onError: () => {
+            queryClient.setQueryData(['user'], null);
+            queryClient.invalidateQueries({ queryKey: ['user'] });
+            toast.error('Errore durante il logout')
+        }
+    })
 
     return (
         <div>
@@ -63,11 +68,12 @@ const MainLayout = () => {
                             <Link to={'/login'} className='my-auto'>Accedi</Link>
                             <Link to={'/register'} className='bg-black py-1.5 px-3 rounded-full text-white text-light text-sm my-auto'>Registrati</Link>
                         </>
-                    ) : <Button onClick={() => handleLogout()} className='bg-white border-none text-black my-auto'>Esci</Button>}
+                    ) : <Button onClick={() => mutation.mutate()} className='bg-white border-none text-black my-auto'>Esci</Button>}
                 </nav>
             </header>
 
             <Outlet />
+            <Toaster />
         </div>
     )
 }

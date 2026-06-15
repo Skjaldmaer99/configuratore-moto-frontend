@@ -1,6 +1,7 @@
 import { http } from "@/lib/http"
 import type z from "zod";
 import { loginFormSchema, recuperoPasswordFormSchema, registerFormSchema, resetPasswordFormSchema } from "@/lib/constant"
+import { isAxiosError } from "axios";
 
 export class AuthService {
 
@@ -28,8 +29,17 @@ export class AuthService {
 
             return res.data;
         } catch (error) {
-            throw new Error(error instanceof Error ? error.message : "Errore generico");
+            if (isAxiosError(error) && error.response) {
+                // Prende il messaggio di errore inviato da Laravel
+                throw new Error(error.response.data?.message || "Credenziali errate");
+            }
+            throw new Error("Errore di connessione al server");
         }
+    }
+
+    static async logout() {
+        await http.post('/logout');
+        localStorage.removeItem('authToken');
     }
 
     static async user() {

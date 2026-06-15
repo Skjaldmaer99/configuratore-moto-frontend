@@ -47,7 +47,7 @@ const ConfigurationsPage = () => {
         <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-5 max-w-7xl mx-auto p-4"> {/* flex flex-col  */}
             {
                 user?.configurations?.map((configuration) => {
-                    const color = configuration.color.hex_code;
+                    const color = configuration.color?.hex_code;
                     return (
                         <Link to={`/configurations/${configuration.id}`} className="relative">
                             <div key={configuration.id} className="h-full p-3 rounded-4xl flex flex-col gap-3 justify-between bg-white shadow-2xl">
@@ -62,7 +62,7 @@ const ConfigurationsPage = () => {
                                     <div className="flex gap-3 justify-between pt-5">
                                         <div className="flex gap-3">
                                             <p className="my-auto font-extrabold">{configuration.model.name} {configuration.engine ? configuration.engine.displacement_cc : "-"}</p>
-                                            {configuration.color.hex_code &&
+                                            {color &&
                                                 <p className={`w-7 h-7 rounded-full my-auto`}
                                                     style={{ backgroundColor: color }}
                                                 >

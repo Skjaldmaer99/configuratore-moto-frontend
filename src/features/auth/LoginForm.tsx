@@ -10,10 +10,11 @@ import {
 } from "@/components/ui/input"
 import { AuthService } from "@/features/auth/auth.service"
 import { loginFormSchema } from "@/lib/constant"
+import { http } from "@/lib/http"
 import {
     zodResolver
 } from "@hookform/resolvers/zod"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import {
     useForm
 } from "react-hook-form"
@@ -34,14 +35,11 @@ export default function LoginForm() {
         resolver: zodResolver(loginFormSchema),
     })
 
-    const { data: user } = useQuery({
-        queryFn: AuthService.user,
-        queryKey: ['user']
-    });
-
     const mutation = useMutation({
         mutationFn: AuthService.login,
-        onSuccess: () => {
+        onSuccess: async (data) => {
+            const user = data.user;
+            const token = localStorage.getItem('authToken');
             queryClient.invalidateQueries({
                 queryKey: ['configurations']
             })
@@ -55,14 +53,19 @@ export default function LoginForm() {
                 queryKey: ['user']
             })
             toast.success("Login effettuato con successo");
-            if (user?.role === "admin") {
-                navigate('/dashboard');
-            } else {
-                navigate('/');
+            // se l'utente non ha verificato la mail, finisco nella pagina di verifica
+            if (!user.email_verified_at) {
+                await http.post('/email/verification-notification', null, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                window.location.href = '/verify-email';
             }
+            navigate('/');
         },
         onError: () => {
-            toast.error("Errore nel login");
+            toast.error("Credenziali errate");
         }
     })
 

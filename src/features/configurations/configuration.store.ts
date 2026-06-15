@@ -13,7 +13,7 @@ type ConfigurationStore = {
 export const useConfigurationStore =
     create<ConfigurationStore>((set) => ({
         configurationId: null,
-        currentStep: 1,
+        currentStep: 2,
 
         setConfigurationId: (id) =>
             set({ configurationId: id }),
@@ -24,6 +24,6 @@ export const useConfigurationStore =
         reset: () =>
             set({
                 configurationId: null,
-                currentStep: 1,
+                currentStep: 2,
             }),
     }));

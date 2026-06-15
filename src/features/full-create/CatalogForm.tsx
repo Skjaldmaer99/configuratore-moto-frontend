@@ -28,6 +28,7 @@ import type { Accessory } from "../accessories/accessory.type";
 import { OptionalService } from "../optionals/optional.service";
 import type { Optional } from "../optionals/optional.type";
 import { CatalogService } from "./catalog.service";
+import { toast } from "sonner";
 
 type Schema = z.infer<typeof fullCreateFormSchema>;
 
@@ -142,7 +143,11 @@ export function CatalogForm() {
                 queryKey: ["catalogs"],
             });
             form.reset();
+            toast.error("Configurazione creata con successo")
         },
+        onError: () => {
+            toast.error("Errore nella creazione della configurazione")
+        }
     });
 
     function onSubmit(values: z.infer<typeof fullCreateFormSchema>) {

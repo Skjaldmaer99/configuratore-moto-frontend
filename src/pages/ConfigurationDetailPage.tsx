@@ -2,6 +2,7 @@ import Menu from "@/components/Menu"
 import { Button } from "@/components/ui/button"
 import { ConfigurationService } from "@/features/configurations/configuration.service"
 import ConfigurationForm from "@/features/configurations/ConfigurationForm"
+import { ModelService } from "@/features/models/model.service"
 import { useQuery } from "@tanstack/react-query"
 import { ChevronLeft } from "lucide-react"
 import { useNavigate, useParams } from "react-router"
@@ -14,6 +15,10 @@ const ConfigurationDetailPage = () => {
         queryKey: ["configurations", id],
         queryFn: () =>
             ConfigurationService.show(Number(id)),
+    });
+    const { data: model } = useQuery({ // se nella config non è ancora stato impostato il colore (e quindi l'img corrispondente, prendo il modello per recuperare i colori e quindi le immagini collegate)
+        queryKey: ["models", id],
+        queryFn: () => ModelService.find(configuration.model_id),
     });
 
     if (isLoading) {
@@ -37,7 +42,7 @@ const ConfigurationDetailPage = () => {
                     <Menu />
                 </div>
                 <div className="w-full lg:w-1/2">
-                    <img src={configuration?.color.image} className="w-full" />
+                    <img src={configuration?.color?.image || model?.colors[0].image} className="w-full" />
                 </div>
             </div>
             <div className="bg-black/90 p-5 lg:px-10 pt-0">
