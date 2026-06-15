@@ -1,15 +1,17 @@
 import Menu from "@/components/Menu"
+import { Button } from "@/components/ui/button"
 import { ConfigurationService } from "@/features/configurations/configuration.service"
 import ConfigurationForm from "@/features/configurations/ConfigurationForm"
 import { useQuery } from "@tanstack/react-query"
 import { ChevronLeft } from "lucide-react"
-import { Link, useParams } from "react-router"
+import { useNavigate, useParams } from "react-router"
 
 const ConfigurationDetailPage = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
 
     const { data: configuration, isLoading } = useQuery({
-        queryKey: ["configuration", id],
+        queryKey: ["configurations", id],
         queryFn: () =>
             ConfigurationService.show(Number(id)),
     });
@@ -23,9 +25,12 @@ const ConfigurationDetailPage = () => {
     return (
         <div className="max-h-screen mt-10">
             <div>
-                <Link to={'/'} className="uppercase font-bold flex gap-1">
+                <Button
+                    onClick={() => navigate(-1)}
+                    className="uppercase font-bold text-black flex gap-1 bg-transparent border-none cursor-pointer"
+                >
                     <ChevronLeft /> Torna indietro
-                </Link>
+                </Button>
             </div>
             <div className="w-full lg:flex gap-8 mt-10">
                 <div className="w-full lg:w-1/2 my-auto">

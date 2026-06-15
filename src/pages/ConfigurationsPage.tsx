@@ -19,7 +19,7 @@ const ConfigurationsPage = () => {
 
     const mutation = useMutation({
         mutationFn: (id: number) => ConfigurationService.delete(id),
-        mutationKey: ['configurations'],
+        mutationKey: ['delete-configuration'],
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: ['user']
@@ -49,8 +49,8 @@ const ConfigurationsPage = () => {
                 user?.configurations?.map((configuration) => {
                     const color = configuration.color.hex_code;
                     return (
-                        <Link to={`/configurations/${configuration.id}`} className="">
-                            <div key={configuration.id} className="h-full p-3 border-2 border-black rounded-4xl flex flex-col gap-3 justify-between bg-white relative">
+                        <Link to={`/configurations/${configuration.id}`} className="relative">
+                            <div key={configuration.id} className="h-full p-3 rounded-4xl flex flex-col gap-3 justify-between bg-white shadow-2xl">
                                 <div className="w-full">
                                     <img
                                         src={configuration.color ? configuration.color?.image : '/image-non-disp.png'}
@@ -75,7 +75,11 @@ const ConfigurationsPage = () => {
                                     <div className="flex gap-3 absolute top-5 right-5">
                                         {configuration.status === "completed" && <DialogConfiguration configurationId={configuration.id!} />}
                                         <Button
-                                            onClick={() => onSubmit(configuration.id!)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                e.preventDefault();
+                                                onSubmit(configuration.id!);
+                                            }}
                                             className="border border-black p-2 bg-white my-auto"
                                             size={'icon'}>
                                             <Trash className="text-black" />

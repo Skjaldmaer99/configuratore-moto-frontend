@@ -27,6 +27,7 @@ import { type User } from '../users/user.type';
 import { ConfigurationService } from './configuration.service';
 import { useConfigurationStore } from "./configuration.store";
 import type { Configuration } from './configuration.type';
+import { useEffect } from 'react';
 
 const steps = [1, 2, 3, 4];
 type ConfigurationFormValues = z.infer<typeof configurationFormSchema>;
@@ -41,6 +42,7 @@ export default function ConfigurationForm({ model }: { model: Model }) {
         currentStep = 1,
         setConfigurationId,
         setCurrentStep,
+        reset,
     } = useConfigurationStore();
 
     const queryClient = useQueryClient();
@@ -50,24 +52,35 @@ export default function ConfigurationForm({ model }: { model: Model }) {
         queryKey: ['user']
     });
 
+    const configId = isEdit
+        ? Number(id)
+        : configurationId;
+
     const { data: configuration } = useQuery<Configuration>({
-        queryFn: () => ConfigurationService.show(isEdit ? id : configurationId),
-        queryKey: ['configuration', configurationId],
+        queryFn: () => ConfigurationService.show(configId!),
+        queryKey: ['configurations', configId],
+        enabled: !!configId,
     });
-    console.log(configuration)
+
+    useEffect(() => {
+        reset();
+    }, [reset]);
+
+    useEffect(() => {
+        if (isEdit) {
+            setCurrentStep(configuration?.current_step ? configuration?.current_step : 1)
+        } else setCurrentStep(1)
+    }, [isEdit, !isEdit])
 
     const form = useForm<ConfigurationFormValues>({
         resolver: zodResolver(configurationFormSchema),
-        values: {
+        defaultValues: {
             user_id: user?.id ?? 0,
             model_id: model.id,
-
             color_id: null,
             engine_variant_id: null,
-
             optional_ids: [],
             accessory_ids: [],
-
             status: "draft",
             current_step: 1,
         }
@@ -82,10 +95,13 @@ export default function ConfigurationForm({ model }: { model: Model }) {
             queryClient.invalidateQueries({
                 queryKey: ['user']
             })
+            queryClient.invalidateQueries({
+                queryKey: ['configurations', configId],
+            })
             setConfigurationId(
                 response.data.id
             );
-            setCurrentStep(currentStep + 1);
+            setCurrentStep(2);
         },
     });
 
