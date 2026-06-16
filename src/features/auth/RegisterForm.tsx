@@ -113,6 +113,7 @@ export default function RegisterForm() {
                     id="password"
                     placeholder="Inserisci la password"
                     className="rounded-full border-primary"
+                    type="password"
 
                     {...form.register("password")}
                 />
@@ -123,6 +124,7 @@ export default function RegisterForm() {
                     id="password_confirmation"
                     placeholder="Conferma la password"
                     className="rounded-full border-primary"
+                    type="password"
 
                     {...form.register("password_confirmation")}
                 />

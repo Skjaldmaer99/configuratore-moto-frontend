@@ -18,17 +18,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { fullCreateFormSchema } from "@/lib/constant";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Check } from "lucide-react";
-import { motion } from "motion/react";
 import { useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
+import { toast } from "sonner";
 import * as z from "zod";
 import { AccessoryService } from "../accessories/accessory.service";
 import type { Accessory } from "../accessories/accessory.type";
 import { OptionalService } from "../optionals/optional.service";
 import type { Optional } from "../optionals/optional.type";
 import { CatalogService } from "./catalog.service";
-import { toast } from "sonner";
 
 type Schema = z.infer<typeof fullCreateFormSchema>;
 
@@ -41,6 +40,7 @@ const steps = [1, 2, 3, 4];
 export function CatalogForm() {
     const [currentStep, setCurrentStep] = useState(1);
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
 
     const { data: optionals } = useQuery<Optional[]>({
         queryFn: OptionalService.list,
@@ -87,8 +87,8 @@ export function CatalogForm() {
     });
 
     const nextStep = async () => {
+        console.log("START NEXT");
         let valid = false;
-
         switch (currentStep) {
             case 1:
                 valid = await form.trigger([
@@ -108,11 +108,13 @@ export function CatalogForm() {
                 break;
 
             case 4:
+                //valid = await form.trigger(["model_optional_compatibility", "model_accessory_compatibility"]);
                 valid = true;
                 break;
         }
-
+        console.log("VALID", valid);
         if (valid) {
+            console.log("SET STEP");
             setCurrentStep((prev) => prev + 1);
         }
     };
@@ -142,8 +144,12 @@ export function CatalogForm() {
             queryClient.invalidateQueries({
                 queryKey: ["catalogs"],
             });
+            queryClient.invalidateQueries({
+                queryKey: ['models'],
+            });
             form.reset();
-            toast.error("Configurazione creata con successo")
+            navigate('/dashboard')
+            toast.success("Configurazione creata con successo")
         },
         onError: () => {
             toast.error("Errore nella creazione della configurazione")
@@ -151,33 +157,16 @@ export function CatalogForm() {
     });
 
     function onSubmit(values: z.infer<typeof fullCreateFormSchema>) {
-        console.log(values.model.brand);
+        console.log("SUBMIT", values);
         mutation.mutate(values)
-    }
-
-
-    // SUCCESS
-    if (mutation.isSuccess) {
-        return (
-            <div className="p-8 border rounded-full">
-                <motion.div
-                    initial={{ opacity: 0, y: -16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                >
-                    <div className="flex justify-center mb-4">
-                        <Check className="size-10" />
-                    </div>
-                    <h2 className="text-2xl font-bold text-center">
-                        Catalog creato correttamente
-                    </h2>
-                </motion.div>
-            </div>
-        );
     }
 
     // FORM
     return (
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={form.handleSubmit(onSubmit,
+            (errors) => {
+                console.log("ERRORS", errors);
+            })}>
             <Stepper
                 value={currentStep}
                 onValueChange={setCurrentStep}
@@ -318,7 +307,7 @@ export function CatalogForm() {
                             {colorFields.map((color, index) => (
                                 <div
                                     key={color.id}
-                                    className="border rounded-full p-4 space-y-4"
+                                    className="p-4 space-y-4"
                                 >
                                     <div className="flex justify-between items-center">
                                         <h3 className="font-semibold">
@@ -422,7 +411,7 @@ export function CatalogForm() {
                             {engineFields.map((engine, index) => (
                                 <div
                                     key={engine.id}
-                                    className="border rounded-full p-4 space-y-4"
+                                    className="p-4 space-y-4"
                                 >
                                     <div className="flex justify-between">
                                         <h3 className="font-semibold">
@@ -701,27 +690,31 @@ export function CatalogForm() {
                         }
                         disabled={currentStep === 1}
                     >
-                        Previous
+                        Precedente
                     </Button>
 
                     {currentStep < steps.length ? (
                         <Button
                             type="button"
-                            onClick={nextStep}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                nextStep();
+                            }}
                         >
-                            Next
+                            Successivo
                         </Button>
                     ) : (
                         <Button
                             type="submit"
                             disabled={mutation.isPending}
                         >
-                            Salva Catalog
+                            Salva Catalogo
                         </Button>
                     )}
                 </div>
 
             </Stepper>
-        </form>
+        </form >
     );
 }

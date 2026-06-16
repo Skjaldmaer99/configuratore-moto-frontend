@@ -54,7 +54,7 @@ export default function LoginForm() {
             })
             toast.success("Login effettuato con successo");
             // se l'utente non ha verificato la mail, finisco nella pagina di verifica
-            if (!user.email_verified_at) {
+            if (user.email_verified_at === null) {
                 await http.post('/email/verification-notification', null, {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -90,6 +90,7 @@ export default function LoginForm() {
                     id="password"
                     placeholder="Inserisci la password"
                     className="rounded-full border-primary"
+                    type="password"
 
                     {...form.register("password")}
                 />

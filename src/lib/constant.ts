@@ -9,7 +9,10 @@ export const registerFormSchema = z.object({
     name: z.string().min(1),
     email: z.string().email("Inserisci un indirizzo email valido"),
     role: z.string(),
-    password: z.string().min(8, "La password deve contenere almeno 8 caratteri"),
+    password: z.string().min(8, "La password deve contenere almeno 8 caratteri")
+        .regex(/[A-Za-z]/, "La password deve contenere almeno una lettera")
+        .regex(/[0-9]/, "La password deve contenere almeno un numero")
+        .regex(/[^A-Za-z0-9]/, "La password deve contenere almeno un carattere speciale"),
     password_confirmation: z.string().min(8, "La password deve contenere almeno 8 caratteri"),
     privacy_policy: z.boolean().refine(val => val === true, {
         message: "Devi accettare i termini e le condizioni",

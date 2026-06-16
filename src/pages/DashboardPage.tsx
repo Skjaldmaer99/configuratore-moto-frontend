@@ -51,7 +51,7 @@ const DashboardPage = () => {
             <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4 md:flex-row gap-5">
                 {/* bottone crea catalogo */}
                 {/* lista moto */}
-                <div className="w-full p-5 rounded-4xl border border-black bg-white">
+                <div className="w-full p-5 rounded-4xl border border-black bg-white max-h-[500px] overflow-auto">
                     <p className="font-extrabold text-lg pb-3">Lista delle moto</p>
                     <Link to={'/crea-catalogo'} className='bg-primary text-secondary border border-primary py-1.5 px-3 text-nowrap rounded-full cursor-pointer font-light text-sm mb-3'>Crea catalogo</Link>
                     {models?.map((model: Model) => (
@@ -71,14 +71,14 @@ const DashboardPage = () => {
 
                 {/* bottone imposta incompatibilità */}
                 {/* sezione delle incompatibilità */}
-                <div className="w-full p-5 rounded-4xl border border-black bg-white">
+                <div className="w-full p-5 rounded-4xl border border-black bg-white max-h-[500px] overflow-auto">
                     <p className="font-extrabold text-lg pb-3">Optional Incompatibili</p>
                     <OptionalIncompatibilitiesForm />
                     <div className="flex pt-3">
                         <div className="w-1/2">
                             <p className="font-medium text-lg pb-1 pe-10">Primo Optional</p>
                             {incompatibilities?.map((optional: OptionalIncompatibility) => (
-                                <p key={optional.id} className="py-3 border-b border-black pe-10">
+                                <p key={optional.id} className="ps-2 py-3 border-b border-black pe-10 truncate">
                                     {optional.optional1.name}
                                 </p>
                             ))}
@@ -86,8 +86,8 @@ const DashboardPage = () => {
                         <div className="w-1/2">
                             <p className="font-medium text-lg pb-1">Secondo Optional</p>
                             {incompatibilities?.map((optional: OptionalIncompatibility) => (
-                                <p key={optional.id} className="py-3 border-b border-black">
-                                    {optional.optional1.name}
+                                <p key={optional.id} className="ps-2 py-3 border-b border-black truncate">
+                                    {optional.optional2.name}
                                 </p>
                             ))}
                         </div>
@@ -96,7 +96,7 @@ const DashboardPage = () => {
 
                 {/* sezione utenti registrati */}
                 {/* sezione aggiungi nuovo utente */}
-                <div className="w-full p-5 rounded-3xl border border-black bg-white">
+                <div className="w-full p-5 rounded-3xl border border-black bg-white max-h-[500px] overflow-auto">
                     <p className="font-extrabold text-lg pb-3">Utenti Registrati</p>
                     {users?.map((user: User) => (
                         <p key={user.id} className="py-3 border-b-1 border-black">
@@ -106,7 +106,7 @@ const DashboardPage = () => {
                 </div>
 
                 {/* sezione optionals */}
-                <div className="w-full p-5 rounded-3xl border border-black bg-white">
+                <div className="w-full p-5 rounded-3xl border border-black bg-white max-h-[500px] overflow-auto">
                     <p className="font-extrabold text-lg pb-3">Optionals</p>
                     <OptionalCreationForm />
                     {optionals?.map((optional: Optional) => (
@@ -117,7 +117,7 @@ const DashboardPage = () => {
                 </div>
 
                 {/* sezione accessori */}
-                <div className="w-full p-5 rounded-3xl border border-black bg-white">
+                <div className="w-full p-5 rounded-3xl border border-black bg-white max-h-[500px] overflow-auto">
                     <p className="font-extrabold text-lg pb-3">Accessori</p>
                     <AccessoryCreationForm />
                     {accessories?.map((accessory: Accessory) => (

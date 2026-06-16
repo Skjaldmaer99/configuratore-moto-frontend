@@ -51,7 +51,7 @@ const VehiclesPage = () => {
             <div className="w-full grid grid-cols-1 sm:grid-cols-3 p-3 mt-10 mx-auto">
                 {models?.map((model) => {
                     return <Link to={`/models/${model.id}`}>
-                        <div className="w-full relative" key={model.id}>
+                        <div className="w-full relative mt-auto bottom-0" key={model.id}>
                             <img
                                 src={model.colors ? model.colors[0]?.image : '/image-non-disp.png'}
                                 alt={model.name}
