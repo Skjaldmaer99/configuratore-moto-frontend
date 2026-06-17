@@ -12,13 +12,6 @@ import {
 import {
     Input
 } from "@/components/ui/input"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue
-} from "@/components/ui/select"
 import { AuthService } from "@/features/auth/auth.service"
 import { registerFormSchema } from "@/lib/constant"
 import {
@@ -26,7 +19,6 @@ import {
 } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import {
-    Controller,
     useForm
 } from "react-hook-form"
 import { Link, useNavigate } from "react-router"
@@ -46,6 +38,7 @@ export default function RegisterForm() {
         resolver: zodResolver(registerFormSchema),
         defaultValues: {
             privacy_policy: false,
+            role: "customer",
         }
     })
 
@@ -90,7 +83,7 @@ export default function RegisterForm() {
                 />
                 <FieldError>{form.formState.errors.email?.message}</FieldError>
             </Field>
-            <Field>
+            {/* <Field>
                 <Controller
                     control={form.control}
                     name="role"
@@ -107,7 +100,7 @@ export default function RegisterForm() {
                     )}
                 />
                 <FieldError>{form.formState.errors.role?.message}</FieldError>
-            </Field>
+            </Field> */}
             <Field>
                 <Input
                     id="password"
