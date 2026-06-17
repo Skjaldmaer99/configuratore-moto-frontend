@@ -57,8 +57,9 @@ const VehiclesPage = () => {
                                 alt={model.name}
                                 className="w-full h-full"
                             />
-                            <Button className="w-10 h-10 rounded-full bg-red-700 absolute bottom-3 right-3 p-2">
+                            <Button className="rounded-full bg-red-700 text-white font-bold absolute bottom-3 right-3 p-2 cursor-pointer">
                                 <Plus className="text-white" />
+                                {/* {model.name} */}
                             </Button>
                         </div>
                     </Link>
