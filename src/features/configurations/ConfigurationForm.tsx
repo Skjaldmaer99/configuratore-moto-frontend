@@ -18,19 +18,19 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { useLocation, useParams } from 'react-router';
 import { toast } from 'sonner';
-import type z from 'zod';
+import z from "zod";
 import { AuthService } from '../auth/auth.service';
 import type { Color } from '../colors/color.type';
 import type { EngineVariant } from '../engineVariants/engineVariant.type';
 import type { Model } from '../models/model.types';
 import { type User } from '../users/user.type';
 import { ConfigurationService } from './configuration.service';
-import type { Configuration } from './configuration.type';
+import type { Configuration, UpdateConfigurationPayload } from './configuration.type';
 import { useEffect } from 'react';
 import { useConfigurationStore } from './configuration.store';
 
 const steps = [1, 2, 3, 4, 5];
-type ConfigurationFormValues = z.infer<typeof configurationFormSchema>;
+type ConfigurationFormValues = z.input<typeof configurationFormSchema>;
 
 export default function ConfigurationForm({ model }: { model: Model }) {
     const location = useLocation();
@@ -39,7 +39,7 @@ export default function ConfigurationForm({ model }: { model: Model }) {
 
     const {
         configurationId,
-        currentStep = `${isEdit ? 2 : 1}`,
+        currentStep = isEdit ? 2 : 1,
         setConfigurationId,
         setCurrentStep,
         reset,
@@ -86,6 +86,20 @@ export default function ConfigurationForm({ model }: { model: Model }) {
         }
     });
 
+    /* const form = useForm<ConfigurationFormValues>({
+        resolver: zodResolver(configurationFormSchema),
+        defaultValues: {
+            optional_ids: [],
+            accessory_ids: [],
+            color_id: null,
+            engine_variant_id: null,
+            status: "draft",
+            current_step: 2,
+            user_id: user?.id ?? 0,
+            model_id: model.id,
+        },
+    }); */
+
     const createConfigurationMutation = useMutation({
         mutationFn: ConfigurationService.create,
         onSuccess: (response) => {
@@ -109,8 +123,8 @@ export default function ConfigurationForm({ model }: { model: Model }) {
     });
 
     const updateConfigurationMutation = useMutation({
-        mutationFn: ({ id, data }: { id: number; data: any }) =>
-            ConfigurationService.update(id, data),
+        mutationFn: ({ id, data }: { id: number; data: Partial<UpdateConfigurationPayload> }) =>
+            ConfigurationService.update(id, data as UpdateConfigurationPayload),
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: ["configurations"],
@@ -169,7 +183,7 @@ export default function ConfigurationForm({ model }: { model: Model }) {
         optionalId: number
     ) => {
         const current =
-            form.getValues("optional_ids");
+            form.getValues("optional_ids") || [];
 
         if (current.includes(optionalId)) {
             form.setValue(
@@ -190,7 +204,7 @@ export default function ConfigurationForm({ model }: { model: Model }) {
         accessoryId: number
     ) => {
         const current =
-            form.getValues("accessory_ids");
+            form.getValues("accessory_ids") || [];
 
         if (current.includes(accessoryId)) {
             form.setValue(
@@ -321,7 +335,7 @@ export default function ConfigurationForm({ model }: { model: Model }) {
                                 className="flex items-center gap-2"
                             >
                                 <Checkbox
-                                    checked={form.watch("optional_ids")
+                                    checked={(form.watch("optional_ids") ?? [])
                                         .includes(Number(optional.pivot.optional_id))}
                                     onCheckedChange={() =>
                                         toggleOptional(Number(optional.pivot.optional_id))
@@ -349,7 +363,7 @@ export default function ConfigurationForm({ model }: { model: Model }) {
                             className="flex items-center gap-2"
                         >
                             <Checkbox
-                                checked={form.watch("accessory_ids")
+                                checked={(form.watch("accessory_ids") ?? [])
                                     .includes(Number(accessory.pivot.accessory_id))}
                                 onCheckedChange={() => toggleAccessory(Number(accessory.pivot.accessory_id))
                                 }

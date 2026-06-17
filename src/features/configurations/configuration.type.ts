@@ -23,3 +23,15 @@ export type Configuration = {
     accessories: Accessory[],
     quote: Quote,
 }
+
+export type UpdateConfigurationPayload = {
+    user_id: number;
+    model_id: number;
+    color_id: number | null;
+    engine_variant_id: number | null;
+    status: string;
+    total_price: number;
+    optional_ids: number[];
+    accessory_ids: number[];
+    current_step: number;
+};

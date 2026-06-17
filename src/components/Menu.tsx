@@ -26,10 +26,10 @@ function Menu() {
     });
 
     const modelId = isModel
-        ? Number(id)
-        : configId;
+        ? id
+        : configId?.toString();
     const { data: model } = useQuery<Model>({
-        queryFn: () => ModelService.find(modelId),
+        queryFn: () => ModelService.find(modelId!),
         queryKey: ['models', modelId],
         enabled: !!modelId,
     });

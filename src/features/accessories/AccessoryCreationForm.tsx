@@ -26,7 +26,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { toast } from "sonner";
-import * as z from "zod";
+import z from "zod";
 import { AccessoryService } from "./accessory.service";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
