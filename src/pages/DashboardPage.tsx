@@ -55,15 +55,21 @@ const DashboardPage = () => {
                     <p className="font-extrabold text-lg pb-3">Lista delle moto</p>
                     <Link to={'/crea-catalogo'} className='bg-primary text-secondary border border-primary py-1.5 px-3 text-nowrap rounded-full cursor-pointer font-light text-sm mb-3'>Crea catalogo</Link>
                     {models?.map((model: Model) => (
-                        <div key={model.id} className="flex gap-3 py-3 border-b-1 border-black">
-                            <div className="w-20">
-                                <img
-                                    src={model.colors[0].image}
-                                    alt="model image"
-                                    className="w-full h-full"
-                                />
+                        <div key={model.id} className="flex justify-between py-3 border-b-1 border-black">
+                            <div className="flex gap-3">
+                                <div className="w-20">
+                                    <img
+                                        src={model.colors[0].image}
+                                        alt="model image"
+                                        className="w-full h-full"
+                                    />
+                                </div>
+                                <div className="flex gap-4 my-auto">
+                                    <p className="font-bold">{model.brand} {model.name}</p>
+                                    <p>€ {model.base_price}</p>
+                                </div>
                             </div>
-                            <p className="my-auto">{model.brand} {model.name}  |  € {model.base_price}  |  {model.category}</p>
+                            <div className="my-auto"><p>{model.category}</p></div>
                         </div>
                     ))
                     }
@@ -111,10 +117,12 @@ const DashboardPage = () => {
                     <OptionalCreationForm />
                     {optionals?.map((optional: Optional) => (
                         <div className="py-3 border-b border-black" key={optional.id}>
-                            <p>{optional.name}</p>
+                            <div className="flex justify-between">
+                                <p className="font-bold">{optional.name}</p>
+                                <p>€{optional.price}</p>
+                            </div>
+                            <p className="font-medium">{optional.type}</p>
                             <p>{optional.description}</p>
-                            <p>{optional.price}</p>
-                            <p>{optional.type}</p>
                         </div>
                     ))}
                 </div>
@@ -125,10 +133,12 @@ const DashboardPage = () => {
                     <AccessoryCreationForm />
                     {accessories?.map((accessory: Accessory) => (
                         <div className="py-3 border-b border-black" key={accessory.id}>
-                            <p>{accessory.name}</p>
+                            <div className="flex justify-between">
+                                <p className="font-bold">{accessory.name}</p>
+                                <p>€{accessory.price}</p>
+                            </div>
+                            <p className="font-medium">{accessory.category}</p>
                             <p>{accessory.description}</p>
-                            <p>{accessory.price}</p>
-                            <p>{accessory.category}</p>
                         </div>
                     ))}
                 </div>
