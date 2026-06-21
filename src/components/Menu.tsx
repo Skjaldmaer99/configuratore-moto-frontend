@@ -58,7 +58,7 @@ function Menu() {
 
 
     return (
-        <main className="relative min-h-[340px] overflow-hidden bg-white text-black font-sans"> {/* min-h-screen */}
+        <main className="relative min-h-[440px] overflow-hidden bg-white text-black font-sans"> {/* min-h-screen */}
             {/* background gradient + noise */}
             <div className="absolute inset-0 " /> {/* bg-[radial-gradient(ellipse_at_30%_40%,oklch(0.18_0.08_27)_0%,oklch(0.05_0_0)_70%)] */}
             <div className="absolute inset-0 opacity-[0.08] mix-blend-overlay"

@@ -110,9 +110,12 @@ const DashboardPage = () => {
                     <p className="font-extrabold text-lg pb-3">Optionals</p>
                     <OptionalCreationForm />
                     {optionals?.map((optional: Optional) => (
-                        <p className="py-3 border-b border-black" key={optional.id}>
-                            {optional.name}
-                        </p>
+                        <div className="py-3 border-b border-black" key={optional.id}>
+                            <p>{optional.name}</p>
+                            <p>{optional.description}</p>
+                            <p>{optional.price}</p>
+                            <p>{optional.type}</p>
+                        </div>
                     ))}
                 </div>
 
@@ -121,9 +124,12 @@ const DashboardPage = () => {
                     <p className="font-extrabold text-lg pb-3">Accessori</p>
                     <AccessoryCreationForm />
                     {accessories?.map((accessory: Accessory) => (
-                        <p className="py-3 border-b border-black" key={accessory.id}>
-                            {accessory.name}
-                        </p>
+                        <div className="py-3 border-b border-black" key={accessory.id}>
+                            <p>{accessory.name}</p>
+                            <p>{accessory.description}</p>
+                            <p>{accessory.price}</p>
+                            <p>{accessory.category}</p>
+                        </div>
                     ))}
                 </div>
             </div>

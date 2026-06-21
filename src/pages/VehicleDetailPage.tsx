@@ -31,24 +31,26 @@ const VehicleDetailPage = () => {
     console.log(model)
 
     return (
-        <div className="max-h-screen mt-10">
-            <div>
-                <Button
-                    onClick={() => navigate(-1)}
-                    className="uppercase font-bold text-black flex gap-1 bg-transparent border-none cursor-pointer"
-                >
-                    <ChevronLeft /> Torna indietro
-                </Button>
-            </div>
-            <div className="w-full lg:flex gap-8 mt-10">
-                <div className="w-full lg:w-1/2 my-auto">
-                    <Menu />
+        <div className="min-h-screen pt-10">
+            <div className="min-h-[65dvh]">
+                <div>
+                    <Button
+                        onClick={() => navigate(-1)}
+                        className="uppercase font-bold text-black flex gap-1 bg-transparent border-none cursor-pointer"
+                    >
+                        <ChevronLeft /> Torna indietro
+                    </Button>
                 </div>
-                <div className="w-full lg:w-1/2">
-                    <img src={configuration ? configuration?.color?.image : model?.colors[0].image} className="w-full" />
+                <div className="w-full lg:flex gap-8 mt-10">
+                    <div className="w-full lg:w-1/2 my-auto">
+                        <Menu />
+                    </div>
+                    <div className="w-full lg:w-1/2">
+                        <img src={configuration ? configuration?.color?.image : model?.colors[0].image} className="w-full" />
+                    </div>
                 </div>
             </div>
-            <div className="bg-black/90 p-5 lg:px-10 pt-0">
+            <div className="bg-black/90 p-5 lg:px-10 pt-0 h-full min-h-[30dvh]">
                 <ConfigurationForm model={model!} />
             </div>
         </div>

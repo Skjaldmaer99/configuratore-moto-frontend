@@ -63,6 +63,7 @@ export default function LoginForm() {
                 window.location.href = '/verify-email';
             }
             navigate('/');
+            window.location.href = '/';
         },
         onError: () => {
             toast.error("Credenziali errate");

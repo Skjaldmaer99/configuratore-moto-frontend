@@ -86,20 +86,6 @@ export default function ConfigurationForm({ model }: { model: Model }) {
         }
     });
 
-    /* const form = useForm<ConfigurationFormValues>({
-        resolver: zodResolver(configurationFormSchema),
-        defaultValues: {
-            optional_ids: [],
-            accessory_ids: [],
-            color_id: null,
-            engine_variant_id: null,
-            status: "draft",
-            current_step: 2,
-            user_id: user?.id ?? 0,
-            model_id: model.id,
-        },
-    }); */
-
     const createConfigurationMutation = useMutation({
         mutationFn: ConfigurationService.create,
         onSuccess: (response) => {
@@ -138,7 +124,7 @@ export default function ConfigurationForm({ model }: { model: Model }) {
             setCurrentStep(currentStep === 5 ? currentStep : currentStep + 1);
         },
         onError: () => {
-            toast.error("Errore nell'aggiornamento della configurazione")
+            toast.error("Optionals non compatibili")
         }
     });
 
@@ -259,7 +245,7 @@ export default function ConfigurationForm({ model }: { model: Model }) {
             </StepperNav>
 
             <StepperPanel className="text-sm">
-                <div className='flex justify-between'>
+                <div className='pb-5 md: pb-0 md:flex justify-between'>
                     {currentStep == 2
                         ? <p className='uppercase font-extrabold text-white text-2xl mb-10'>Seleziona il colore</p>
                         : currentStep == 3
@@ -273,20 +259,18 @@ export default function ConfigurationForm({ model }: { model: Model }) {
                     <p className='text-white'>Prezzo: <span className='font-bold text-lg'>{(configuration && configuration.total_price !== 0.00) ? configuration.total_price : model.base_price}</span></p>
                 </div>
                 <StepperContent value={1}>
-                    <div className="flex gap-7 justify-center">
-                        <Button
-                            type="button"
-                            className='flex p-3 pe-5 border-1 border-black text-black uppercase font-bold rounded-full bg-white hover:bg-white/40 mx-auto h-15'
-                            onClick={() =>
-                                handleConfigurationSubmit()
-                            }
-                        >
-                            Inizia configurazione
-                        </Button>
-                    </div>
+                    <Button
+                        type="button"
+                        className='flex p-3 pe-5 border-1 border-black text-black uppercase font-bold rounded-full bg-white hover:bg-white/40 mx-auto h-15 mt-5'
+                        onClick={() =>
+                            handleConfigurationSubmit()
+                        }
+                    >
+                        Inizia configurazione
+                    </Button>
                 </StepperContent>
                 <StepperContent value={2}>
-                    <div className="flex gap-7 max-w-3xl justify-center mx-auto">
+                    <div className="flex flex-col md:flex-row gap-7 max-w-3xl justify-center mx-auto">
                         {model.colors?.map((color) => (
                             <Button
                                 key={color.id}
@@ -306,7 +290,7 @@ export default function ConfigurationForm({ model }: { model: Model }) {
                     </div>
                 </StepperContent>
                 <StepperContent value={3}>
-                    <div className="flex gap-7 max-w-3xl justify-center mx-auto">
+                    <div className="flex flex-col md:flex-row gap-7 max-w-3xl justify-center mx-auto">
                         {model.engine_variants?.map((engine) => (
                             <Button
                                 key={engine.id}
@@ -325,10 +309,9 @@ export default function ConfigurationForm({ model }: { model: Model }) {
                         ))}
                     </div>
                 </StepperContent>
-                <StepperContent className="w-full flex flex-col gap-5 items-center justify-center" key={4} value={4}>
+                <StepperContent className="max-w-[350px] flex flex-col gap-5 items-left justify-center mx-auto" key={4} value={4}>
                     {/* FORM OPTIONALS */}
                     {model.optionals?.map((optional) => {
-
                         return (
                             <div
                                 key={optional.pivot.optional_id}
@@ -354,8 +337,16 @@ export default function ConfigurationForm({ model }: { model: Model }) {
                     >
                         Conferma Optional
                     </Button>
+                    {configId &&
+                        <>
+                            <p className='font-bold text-white pt-5'>Optionals selezionati: </p>
+                            <p className=''>{configuration?.optionals.map((optional) => (
+                                <span className='pe-2 text-white'>{optional.name},</span>
+                            ))}</p>
+                        </>
+                    }
                 </StepperContent>
-                <StepperContent className="w-full flex flex-col gap-5 items-center justify-center" key={5} value={5}>
+                <StepperContent className="max-w-[350px] flex flex-col gap-5 items-left justify-center mx-auto" key={5} value={5}>
                     {/* FORM ACCESSORI */}
                     {model.accessories?.map((accessory) => (
                         <div
@@ -380,6 +371,14 @@ export default function ConfigurationForm({ model }: { model: Model }) {
                     >
                         Conferma Accessori
                     </Button>
+                    {configId &&
+                        <>
+                            <p className='font-bold text-white pt-5'>Accessori selezionati: </p>
+                            <p className=''>{configuration?.accessories.map((accessory) => (
+                                <span className='pe-2 text-white'>{accessory.name},</span>
+                            ))}</p>
+                        </>
+                    }
                 </StepperContent>
             </StepperPanel>
 
@@ -406,6 +405,6 @@ export default function ConfigurationForm({ model }: { model: Model }) {
                     </Button>
                 }
             </div>
-        </Stepper>
+        </Stepper >
     );
 }
